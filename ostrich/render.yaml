@@ -1,0 +1,25 @@
+# Blueprint для Render: New → Blueprint → выберите репозиторий
+services:
+  - type: web
+    name: ostrich-tv
+    runtime: node
+    plan: starter            # нужен платный тариф: только на нём есть постоянный диск
+    region: frankfurt
+    buildCommand: npm ci --omit=dev
+    startCommand: node server.js
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: DATA_DIR
+        value: /var/data
+      - key: MAX_UPLOAD_MB
+        value: "500"
+      - key: ADMIN_KEY
+        sync: false          # Render попросит ввести значение вручную при создании
+    disk:
+      name: ostrich-data
+      mountPath: /var/data
+      sizeGB: 10
